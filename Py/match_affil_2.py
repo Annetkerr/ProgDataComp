@@ -188,7 +188,7 @@ for item in nameRow :
 	# f.write(str(line))
 	# f.write('\n')
 
-f.write("Source;Name;Code 1;Code 2;Impact Area;Category;Type\n")
+f.write("Source;Name;iMIS ID;ProgNo;Impact Area;Category;Type\n")
 #print '\n\nProgram Data:' 
 #f.write('\n\nProgram Data\n') 
 for item in progList :
