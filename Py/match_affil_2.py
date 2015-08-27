@@ -6,7 +6,8 @@ import sys
 import re
 import unicodecsv
 #####################
-#Here here here to do:  capture category and type.   Include that in the sort for output?
+#here here here to do:  allow upper or lower input parameters
+#                       fix for funky characters in names (see NYNY file)
 
 ##############################################
 if len( sys.argv ) == 1 :
@@ -105,15 +106,16 @@ for val in impactRow :
 	if (val == "") :
 		k = k+1
 		continue
+	#TO DO: use regex to match in case of leading or trailing spaces
 	if (val == "Encouraging Positive Development") :
 		print ('Encouraging Positive Development starts at column %s' %k) 
-		impacts['epd'] = k
+		#impacts['epd'] = k
 	elif (val == "Fostering Independence") :
 		print ('Fostering Independence starts at column %s' % k) 
-		impacts['fi'] = k
+		#impacts['fi'] = k
 	elif (val == "Promoting Self-Sufficiency ") :
 	#elif (k == 86) :
-		print ('Promoting Self-Sufficiency starts at column %s' % k) 		
+		#print ('Promoting Self-Sufficiency starts at column %s' % k) 		
 		impacts['pss'] = k	
 		
 	k = k+1
