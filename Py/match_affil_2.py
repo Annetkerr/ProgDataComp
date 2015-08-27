@@ -40,6 +40,7 @@ f = open(outFile,'w')
 #Build List for program data program names and codes
 progList = []
 progFile = os.path.join(progDir,fn)
+#print('opening file %s' % progFile)
 pReader = csv.reader(open(progFile, 'r'), delimiter=',')
 i = 0 
 for row in pReader:
@@ -55,12 +56,12 @@ for row in pReader:
 	l.append(row[3])       #category
 	l.append(row[4])       #type
 	
-	print 'adding entry to progList'
-	print l
+	#print 'adding entry to progList'
+	#print l
 	progList.append(l)
 
-print '\n\n\nCompleted Proglist\n'
-print progList
+#print '\n\n\nCompleted Proglist\n'
+#print progList
 
 ########
 #Build list for financial data program names and codes
@@ -87,12 +88,58 @@ for row in fReader :
 	else : 
 		continue
 			
+			
+# Extract the ImpactAreas and the Column Range for Each
+k = 0
+j = 1
+impacts = dict()
+	#hour = timebits[0]
+	#hours[hour] = hours.get(hour,0) + 1
+
+for val in impactRow :
+	#print k
+	#print val
+	if (k == 0) : 
+		k = k+1
+		continue
+	if (val == "") :
+		k = k+1
+		continue
+	if (val == "Encouraging Positive Development") :
+		print ('Encouraging Positive Development starts at column %s' %k) 
+		impacts['epd'] = k
+	elif (val == "Fostering Independence") :
+		print ('Fostering Independence starts at column %s' % k) 
+		impacts['fi'] = k
+	elif (val == "Promoting Self-Sufficiency ") :
+	#elif (k == 86) :
+		print ('Promoting Self-Sufficiency starts at column %s' % k) 		
+		impacts['pss'] = k	
+		
+	k = k+1
+
+#print ('Encouraging Positive Development starts at column %s' % impacts['epd'])
+#print ('Fostering Independence starts at column %s' % impacts['fi'])
+#print ('Promoting Self-Sufficiency starts at column %s' % impacts['pss'])
+	
+
+			
 # Read the nameRow and extract the category, type and iMIS ID and the program number for each.
-#TO DO extract impact area
 skiplist = ['Local program name', 'Eliminations', 'Auto resale', 'Auto donation', 'Capital Campaign', 'General']
 
+#use i to track the current column
 i = 0
 for item in nameRow :
+	#walk through the nameRow selecting the program name from each column
+	#and then getting the other info from the same column, as necessary.  
+	#Impact Area is not in the column, though. It is a header associated with a particular range, and that range varies for each affiliate file.
+	if (i < impacts['fi']) :
+		ia = "Encouraging Positive Development"
+	elif (i < impacts['pss']) :
+		ia = "Fostering Independence"
+	else :
+		ia = "Promoting Self-Sufficiency"
+	
 	l = []    #reinit list
 	#if (item =='Local program name') : 
 	if item in skiplist :
@@ -103,6 +150,7 @@ for item in nameRow :
 		l.append(item)
 		l.append(iMISRow[i])
 		l.append(progNumRow[i])
+		l.append(ia)
 		l.append(catRow[i])
 		l.append(typeRow[i])
 		finList.append(l)
@@ -141,24 +189,24 @@ for item in nameRow :
 	# f.write('\n')
 
 f.write("Source;Name;Code 1;Code 2;Impact Area;Category;Type\n")
-print '\n\nProgram Data:' 
+#print '\n\nProgram Data:' 
 #f.write('\n\nProgram Data\n') 
 for item in progList :
 	#for item in entry :
 		line = "Service;" + item[0] + ';;' + item[1] + ';' + item[2] + ';' + item[3] + ';' + item[4]
-		print line
-		print '\n'
+		#print line
+		#print '\n'
 		f.write(str(line))
 		f.write('\n')	
 	
-print '\n\nFinancial Data:' 
+#print '\n\nFinancial Data:' 
 #f.write('\n\nFinancial Data\n') 
 for item in finList :
 	#for item in entry :
-		print len(item)
-		line = "Finance;" + item[0] + ';' + item[1] + ';' + item[2] + ';' + item[3] + ';' + item[4]  #+ ';' + item[5]
-		print line
-		print '\n'
+		#print len(item)
+		line = "Finance;" + item[0] + ';' + item[1] + ';' + item[2] + ';' + item[3] + ';' + item[4]  + ';' + item[5]
+		#print line
+		#print '\n'
 		f.write(str(line))
 		f.write('\n')		
 	
